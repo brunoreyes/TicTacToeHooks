@@ -26,10 +26,11 @@ function Square(props) {
       // Now I am adding a new X for each on click.
       // set state effects all child elements within it.
       // onClick={() => this.setState({ value: 'X' })}
+
+      //   When we modified the Square to be a function component instead of a class component,
+      //   we also changed onClick={() => this.props.onClick()} to a shorter onClick={props.onClick}
+      //   (note the lack of parentheses on both sides).
       //   onClick={() => this.props.onClick()}
-      //   When we modified the Square to be a function component, we also
-      //   changed onClick={() => this.props.onClick()} to a shorter onClick={props.onClick}
-      //    (note the lack of parentheses on both sides).
       onClick={props.onClick}
     >
       {/* Since the Board passed onClick={() => this.handleClick(i)} to Square,
@@ -44,8 +45,8 @@ function Square(props) {
 
 class Board extends React.Component {
   // To collect data from multiple children,
-  //     or to have two child components communicate
-  //     with each other, you need to declare the shared
+  // or to have two child components communicate
+  // with each other, you need to declare the shared
   // state in their parent component instead.The parent
   // component can pass the state back down to the children
   // by using props; this keeps the child components in sync
@@ -53,51 +54,11 @@ class Board extends React.Component {
 
   // Next, we’ll have the Board component receive squares
   // and onClick props from the Game component.
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     squares: Array(9).fill(null),
-  //     xIsNext: true,
-  //   };
-  // }
 
   // After implementing handleClick(i) the state is
-  //stored in the Borad component instead of the
+  //stored in the Board component instead of the
   //individual Square component. Now the Square components
   // are now controlled components and the board has full control of them.
-
-  // handleClick(i) {
-  // Unlike the array push() method you might be more familiar with, the
-  // concat() method doesn’t mutate the original array, so we prefer it.
-  // const history = this.state.history;
-
-  // We will also replace reading this.state.history
-  // with this.state.history.slice(0, this.state.stepNumber + 1).This
-  // ensures that if we “go back in time” and then make a new move from
-  // that point, we throw away all the “future” history that would now become incorrect.
-  // const history = this.state.history.slice(0, this.state.stepNumber + 1);
-  // const current = history[history.length - 1];
-  // rendering the currently selected move according to stepNumber:
-  // const current = history[this.state.stepNumber];
-  // const squares = current.squares.slice();
-  // const squares = this.state.squares.slice();
-  // if (calculateWinner(squares) || squares[i]) {
-  // return;
-  // }
-  //   squares[i] = this.state.xIsNext ? 'X' : 'O';
-  //   // Note how in handleClick, we call .slice() to create a copy of the squares
-  //   // array to modify instead of modifying the existing array.
-  //   // squares[i] = 'X';
-  //   this.setState({
-  //     history: history.concat([
-  //       {
-  //         squares: squares,
-  //       },
-  //     ]),
-  //     stepNumber: history.length,
-  //     xIsNext: !this.state.xIsNext,
-  //   });
-  // }
 
   renderSquare(i) {
     return (
@@ -121,16 +82,6 @@ class Board extends React.Component {
   }
 
   render() {
-    // const status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');
-    // const history = this.state.history;
-    // const current = history[history.length - 1];
-    // const winner = calculateWinner(this.state.squares);
-    // let status;
-    // if (winner) {
-    //   status = 'Winner: ' + winner;
-    // } else {
-    //   status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    // }
     return (
       <div>
         {/* <div className="status">{status}</div> */}
@@ -163,13 +114,18 @@ class Game extends React.Component {
           squares: Array(9).fill(null),
         },
       ],
-      // stepNumber to the Game component’s state
-      //to indicate which step we’re currently viewing.
+      // stepNumber indicates which step we’re currently viewing.
       stepNumber: 0,
       xIsNext: true,
     };
   }
   handleClick(i) {
+    // Note how in handleClick, we call .slice() to create a copy of the squares
+    // array to modify instead of modifying the existing array.
+    // We will also replace reading this.state.history
+    // with this.state.history.slice(0, this.state.stepNumber + 1).This
+    // ensures that if we “go back in time” and then make a new move from
+    // that point, we throw away all the “future” history that would now become incorrect.
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
@@ -177,6 +133,9 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    // Unlike the array push() method you might be more familiar with, the
+    // concat() method doesn’t mutate the original array, so we prefer it.
+    // const history = this.state.history;
     this.setState({
       history: history.concat([
         {
@@ -254,6 +213,8 @@ function calculateWinner(squares) {
 // ========================================
 
 ReactDOM.render(<Game />, document.getElementById('root'));
+
+// Notes on approaches to changing data
 
 // There are generally two approaches to changing data. The first approach is to mutate the data by directly changing the data’s values. The second approach is to replace the data with a new copy which has the desired changes.
 
